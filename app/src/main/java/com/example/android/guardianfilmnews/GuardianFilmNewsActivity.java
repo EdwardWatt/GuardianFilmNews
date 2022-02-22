@@ -4,10 +4,12 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -20,7 +22,7 @@ public class GuardianFilmNewsActivity extends AppCompatActivity
     private static final String LOG_TAG = GuardianFilmNewsActivity.class.getName();
     /** URL for GuardianFilmNews data from the GUARDIAN_FILM dataset */
     private static final String GUARDIAN_FILM_REQUEST_URL =
-            "https://content.guardianapis.com/search?section=film&api-key=test";
+            "https://content.guardianapis.com/search?";
     /**
      * Constant value for the GuardianFilmNews loader ID.
      */
@@ -53,6 +55,9 @@ public class GuardianFilmNewsActivity extends AppCompatActivity
                 Uri GuardianFilmNewsUri = Uri.parse(currentGuardianArticle.getUrl());
                 // Create a new intent to view the GuardianFilmNews URI
                 Intent websiteIntent = new Intent(Intent.ACTION_VIEW, GuardianFilmNewsUri);
+                //I added this Adapter Clear command to prevent the lists from doubling up everytime the user
+                //goes to click an item and come back to the app
+                mAdapter.clear();
                 // Send the intent to launch a new activity
                 startActivity(websiteIntent);
             }
@@ -66,7 +71,6 @@ public class GuardianFilmNewsActivity extends AppCompatActivity
         if (networkInfo != null && networkInfo.isConnected()) {
             // Get a reference to the LoaderManager, in order to interact with loaders.
             LoaderManager loaderManager = getLoaderManager();
-
             // Initialize the loader. Pass in the int ID constant defined above and pass in null for
             // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
             // because this activity implements the LoaderCallbacks interface).
@@ -76,15 +80,23 @@ public class GuardianFilmNewsActivity extends AppCompatActivity
             // First, hide loading indicator so error message will be visible
             View loadingIndicator = findViewById(R.id.loading_indicator);
             loadingIndicator.setVisibility(View.GONE);
-
             // Update empty state with no connection error message
             mEmptyStateTextView.setText(R.string.no_internet_connection);
         }
     }
     @Override
     public Loader<List<GuardianFilmNewsArticle>> onCreateLoader(int i, Bundle bundle) {
+        // parse breaks apart the URI string that's passed into its parameter
+        Uri baseUri = Uri.parse(GUARDIAN_FILM_REQUEST_URL);
+        // buildUpon prepares the baseUri that we just parsed so we can add query parameters to it
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        // Append query parameter and its value. For example, the `format=geojson`
+        uriBuilder.appendQueryParameter("format", "json");
+        uriBuilder.appendQueryParameter("section", "film");
+        uriBuilder.appendQueryParameter("show-tags", "contributor");
+        uriBuilder.appendQueryParameter("api-key", "d8b9ecc5-517a-40ad-8633-4c759e89ce35");
         // Create a new loader for the given URL
-        return new GuardianFilmNewsLoader(this, GUARDIAN_FILM_REQUEST_URL);
+        return new GuardianFilmNewsLoader(this, uriBuilder.toString());
     }
     @Override
     public void onLoadFinished(Loader<List<GuardianFilmNewsArticle>> loader, List<GuardianFilmNewsArticle> articles) {

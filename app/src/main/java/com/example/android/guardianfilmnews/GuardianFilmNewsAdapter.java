@@ -19,7 +19,7 @@ public class GuardianFilmNewsAdapter extends ArrayAdapter<GuardianFilmNewsArticl
      * Constructs a new {@link GuardianFilmNewsAdapter}.
      *
      * @param context                  of the app
-     * @param GuardianFilmNewsArticles is the list of GuardianFilmNewss, which is the data source of the adapter
+     * @param GuardianFilmNewsArticles is the list of GuardianFilmNewsArticles, which is the data source of the adapter
      */
     public GuardianFilmNewsAdapter(Context context, List<GuardianFilmNewsArticle> GuardianFilmNewsArticles) {
         super(context, 0, GuardianFilmNewsArticles);
@@ -71,6 +71,10 @@ public class GuardianFilmNewsAdapter extends ArrayAdapter<GuardianFilmNewsArticl
         TextView timeView = (TextView) listItemView.findViewById(R.id.time);
         timeView.setText(timeHour + ":" + timeMinute);
         // Return the list item view that is now showing the appropriate data
+        TextView authorView = (TextView) listItemView.findViewById(R.id.author_line);
+        authorView.setText("By: " + currentGuardianArticle.getContributor());
+        // Return the list item view that is now showing the appropriate data
+
         return listItemView;
     }
 }

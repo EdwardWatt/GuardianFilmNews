@@ -11,6 +11,8 @@ public class GuardianFilmNewsArticle {
     private String mTime;
     /** Website URL of the GuardianFilmNews */
     private String mUrl;
+    private String mContributor;
+
     /**
      * Constructs a new {@link GuardianFilmNewsArticle} object.
      *
@@ -18,12 +20,14 @@ public class GuardianFilmNewsArticle {
      * @param subject name the GuardianFilmNews article
      * @param time is the time and date stamp when the article was posted
      * @param url is the website URL to find more details about the Film News from Guardian
+     *            @param contributor is the name the GuardianFilmNews article author
      */
-    public GuardianFilmNewsArticle(String section, String subject, String time, String url) {
+    public GuardianFilmNewsArticle(String section, String subject, String time, String url, String contributor) {
         mSection = section;
         mSubject = subject;
         mTime = time;
         mUrl = url;
+        mContributor = contributor;
     }
     /**
      * Returns the magnitude of the GuardianFilmNews.
@@ -48,5 +52,8 @@ public class GuardianFilmNewsArticle {
      */
     public String getUrl() {
         return mUrl;
+    }
+    public String getContributor() {
+        return mContributor;
     }
 }

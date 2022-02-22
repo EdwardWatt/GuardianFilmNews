@@ -135,18 +135,22 @@ public final class QueryUtils {
             JSONObject currentGuardianFilmNewsObject = baseJsonResponse.getJSONObject("response");
             // Extract the JSONArray associated with the key called "features",
             // which represents a list of features (or articles).
-            //JSONObject GuardianFilmNewsObject = baseJsonResponse.getJSONObject("response");
             JSONArray currentGuardianFilmNewsArray = currentGuardianFilmNewsObject.getJSONArray("results");
-            //JSONArray results = currentGuardianFilmNews.getJSONArray("results");
             // For each GuardianFilmNews in the GuardianFilmNewsArray, create an {@link GuardianFilmNews} object
             for (int i = 0; i < currentGuardianFilmNewsArray.length(); i++) {
-                //JSONObject currentArticle = currentGuardianFilmNewsArray.getJSONObject(i);
                 // Get a single GuardianFilmNews at position i within the list of articles
                 JSONObject results = currentGuardianFilmNewsArray.getJSONObject(i);
+                JSONArray contributorResults = results.getJSONArray("tags");
+                String contributor = "No Author";
+                for (int temp = 0; temp < contributorResults.length(); temp++) {
+                    JSONObject authorContributor = contributorResults.getJSONObject(temp);
+                    contributor = authorContributor.getString("webTitle");
+                }
                 // For a given GuardianFilmNews, extract the JSONObject associated with the
                 // key called "results", which represents a list of all results
                 // for that GuardianFilmNews.
                 // Extract the value for the key called "sectionName"
+
                 String section = results.getString("sectionName");
                 // Extract the value for the key called "webTitle"
                 String subject = results.getString("webTitle");
@@ -156,7 +160,7 @@ public final class QueryUtils {
                 String url = results.getString("webUrl");
                 // Create a new {@link GuardianFilmNews} object with the section, subject, time,
                 // and url from the JSON response.
-                GuardianFilmNewsArticle GuardianArticle = new GuardianFilmNewsArticle(section, subject, time, url);
+                GuardianFilmNewsArticle GuardianArticle = new GuardianFilmNewsArticle(section, subject, time, url, contributor);
                 // Add the new {@link GuardianFilmNews} to the list of GuardianFilmNewsArticles.
                 articles.add(GuardianArticle);
             }
